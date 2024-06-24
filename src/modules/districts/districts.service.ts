@@ -3,7 +3,7 @@ import { CreateDistrictDto } from './dto/create-district.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { District } from './entities/district.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { DivisionsService } from '../divisions/divisions.service';
 import { seedData } from './districtData';
 
@@ -76,5 +76,14 @@ export class DistrictsService {
         await this.districtRepository.save(district);
       }
     }
+  }
+  async findByName(name: string) {
+    return await this.districtRepository.findOne({
+      where: [
+        { name_bn: ILike(`%${name}%`) }, // ILike for case-insensitive like search
+        { name_en: ILike(`%${name}%`) },
+      ],
+      relations: ['thanaList', 'division'],
+    });
   }
 }

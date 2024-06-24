@@ -3,7 +3,7 @@ import { CreateDivisionDto } from './dto/create-division.dto';
 import { UpdateDivisionDto } from './dto/update-division.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Division } from './entities/division.entity';
-import { Repository } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 
 @Injectable()
 export class DivisionsService {
@@ -33,20 +33,20 @@ export class DivisionsService {
   }
 
   async update(id: number, updateDivisionDto: UpdateDivisionDto) {
-    const division_id = await this.findOne(id);
-    if (!division_id) {
-      throw new NotFoundException();
+    const division = await this.findOne(id);
+    if (!division) {
+      throw new NotFoundException(`Division with ID ${id} not found`);
     }
-    Object.assign(division_id, updateDivisionDto);
-    return await this.divisionRepository.save(division_id);
+    Object.assign(division, updateDivisionDto);
+    return await this.divisionRepository.save(division);
   }
 
   async remove(id: number) {
-    const division_id = await this.findOne(id);
-    if (!division_id) {
-      throw new NotFoundException();
+    const division = await this.findOne(id);
+    if (!division) {
+      throw new NotFoundException(`Division with ID ${id} not found`);
     }
-    return await this.divisionRepository.remove(division_id);
+    return await this.divisionRepository.remove(division);
   }
 
   async seedDataIfNotExists() {
@@ -64,5 +64,15 @@ export class DivisionsService {
       ];
       await this.divisionRepository.save(seedData);
     }
+  }
+
+  async findByName(name: string) {
+    return await this.divisionRepository.findOne({
+      where: [
+        { name_bn: ILike(`%${name}%`) }, // ILike for case-insensitive like search
+        { name_en: ILike(`%${name}%`) },
+      ],
+      relations: ['districtList'],
+    });
   }
 }
