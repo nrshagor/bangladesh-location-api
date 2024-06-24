@@ -67,7 +67,7 @@ export class DivisionsService {
   }
 
   async findByName(name: string) {
-    return await this.divisionRepository.findOne({
+    return await this.divisionRepository.find({
       where: [
         { name_bn: ILike(`%${name}%`) }, // ILike for case-insensitive like search
         { name_en: ILike(`%${name}%`) },

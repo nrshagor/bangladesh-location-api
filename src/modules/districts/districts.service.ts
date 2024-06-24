@@ -78,7 +78,7 @@ export class DistrictsService {
     }
   }
   async findByName(name: string) {
-    return await this.districtRepository.findOne({
+    return await this.districtRepository.find({
       where: [
         { name_bn: ILike(`%${name}%`) }, // ILike for case-insensitive like search
         { name_en: ILike(`%${name}%`) },

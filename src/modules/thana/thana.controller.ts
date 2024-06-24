@@ -26,9 +26,18 @@ export class ThanaController {
     return this.thanaService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.thanaService.findOne(id);
+  @Get(':param')
+  async findOne(@Param('param') param: string) {
+    // Check if param is a number (for ID) or a string (for name)
+    const id = parseInt(param, 10); // Try to parse param as integer
+
+    if (isNaN(id)) {
+      // If param is not a number, assume it's a thana name in either language
+      return this.thanaService.findByName(param);
+    } else {
+      // If param is a number, find thana by ID
+      return this.thanaService.findOne(id);
+    }
   }
 
   @Patch(':id')

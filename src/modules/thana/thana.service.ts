@@ -3,7 +3,7 @@ import { CreateThanaDto } from './dto/create-thana.dto';
 import { UpdateThanaDto } from './dto/update-thana.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Thana } from './entities/thana.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { DistrictsService } from '../districts/districts.service';
 import { seedData } from './thanaData';
 
@@ -73,5 +73,15 @@ export class ThanaService {
         await this.thanaRepository.save(thana);
       }
     }
+  }
+
+  async findByName(name: string) {
+    return await this.thanaRepository.find({
+      where: [
+        { name_bn: ILike(`%${name}%`) }, // ILike for case-insensitive like search
+        { name_en: ILike(`%${name}%`) },
+      ],
+      relations: ['district'],
+    });
   }
 }
