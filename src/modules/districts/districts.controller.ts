@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { DistrictsService } from './districts.service';
 import { CreateDistrictDto } from './dto/create-district.dto';
 import { UpdateDistrictDto } from './dto/update-district.dto';
@@ -18,17 +27,20 @@ export class DistrictsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.districtsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.districtsService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDistrictDto: UpdateDistrictDto) {
-    return this.districtsService.update(+id, updateDistrictDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDistrictDto: UpdateDistrictDto,
+  ) {
+    return this.districtsService.update(id, updateDistrictDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.districtsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.districtsService.remove(id);
   }
 }

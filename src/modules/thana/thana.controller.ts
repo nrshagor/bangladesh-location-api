@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ThanaService } from './thana.service';
 import { CreateThanaDto } from './dto/create-thana.dto';
 import { UpdateThanaDto } from './dto/update-thana.dto';
@@ -18,17 +27,20 @@ export class ThanaController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.thanaService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.thanaService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateThanaDto: UpdateThanaDto) {
-    return this.thanaService.update(+id, updateThanaDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateThanaDto: UpdateThanaDto,
+  ) {
+    return this.thanaService.update(id, updateThanaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.thanaService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.thanaService.remove(id);
   }
 }
